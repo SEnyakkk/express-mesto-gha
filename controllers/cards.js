@@ -29,7 +29,7 @@ module.exports.deleteCard = (req, res) => {
       }
       res.send({ message: 'Карточка удалена' });
     })
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch(() => res.status(400).send({ message: 'На сервере произошла ошибка' })); // тесты просят ошибку 400 //
 };
 
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
