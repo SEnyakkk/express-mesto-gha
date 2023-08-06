@@ -45,7 +45,7 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
     }
     res.send(card);
   })
-  .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+  .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
@@ -60,4 +60,4 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
     }
     res.send(card);
   })
-  .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+  .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
