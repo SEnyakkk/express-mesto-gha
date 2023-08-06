@@ -1,4 +1,4 @@
-const Card = require('../models/card')
+const Card = require('../models/card');
 
 module.exports.addCard = (req, res) => {
   const { name, link } = req.body;
@@ -35,26 +35,27 @@ module.exports.deleteCard = (req, res) => {
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $addToSet: { likes: req.user._id } },
-  { new: true })
+  { new: true },
+)
   .populate(['owner', 'likes'])
   .then((card) => {
     if (!card) {
-      res.status(404).send({ message: 'Карточка не найдена' })
+      res.status(404).send({ message: 'Карточка не найдена' });
       return;
     }
     res.send(card);
   })
   .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
 
-
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
-  { new: true })
+  { new: true },
+)
   .populate(['owner', 'likes'])
   .then((card) => {
     if (!card) {
-      res.status(404).send({ message: 'Карточка не найдена' })
+      res.status(404).send({ message: 'Карточка не найдена' });
       return;
     }
     res.send(card);

@@ -1,4 +1,3 @@
-
 const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
@@ -14,12 +13,8 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.addUser = (req, res) => {
-  const {
-    name, about, avatar
-  } = req.body;
-  User.create({
-    name, about, avatar
-  })
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -29,7 +24,6 @@ module.exports.addUser = (req, res) => {
       }
     });
 };
-
 
 module.exports.editUserData = (req, res) => {
   const { name, about } = req.body;
@@ -56,4 +50,3 @@ module.exports.editUserAvatar = (req, res) => {
       }
     });
 };
-
