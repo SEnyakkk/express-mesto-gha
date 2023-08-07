@@ -30,9 +30,9 @@ module.exports.deleteCard = (req, res) => {
         }
         res.send({ message: 'Карточка удалена' });
       })
-      .catch(() => res.status(400).send({ message: 'Проверьте Id карточки' }));
+      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
-    res.status(500).send({ message: 'На сервере произошла ошибка' });
+    res.status(400).send({ message: 'Проверьте Id карточки' });
   }
 };
 
