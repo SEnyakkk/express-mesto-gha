@@ -21,15 +21,19 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Карточка не найдена' });
-        return;
-      }
-      res.send({ message: 'Карточка удалена' });
-    })
-    .catch(() => res.status(400).send({ message: 'На сервере произошла ошибка' })); // тесты просят ошибку 400 //
+  if (req.params.cardId.length === 24) {
+    Card.findByIdAndRemove(req.params.cardId)
+      .then((card) => {
+        if (!card) {
+          res.status(404).send({ message: 'Карточка не найдена' });
+          return;
+        }
+        res.send({ message: 'Карточка удалена' });
+      })
+      .catch(() => res.status(400).send({ message: 'Проверьте Id карточки' }));
+  } else {
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
+  }
 };
 
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
