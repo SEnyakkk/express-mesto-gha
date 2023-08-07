@@ -32,7 +32,7 @@ module.exports.deleteCard = (req, res) => {
       })
       .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
-    res.status(400).send({ message: 'Проверьте Id карточки' });
+    res.status(400).send({ message: 'Проверьте Id карточки' }); // вариант с проверкой на длину id //
   }
 };
 
@@ -49,7 +49,13 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
     }
     res.send(card);
   })
-  .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      res.status(400).send({ message: 'Неверный id карточки' });
+    } else {
+      res.status(500).send({ message: 'На сервере произошла ошибка' }); // вариант с поиском 'CastError' в названии ошибки //
+    }
+  });
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
@@ -64,4 +70,10 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
     }
     res.send(card);
   })
-  .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      res.status(400).send({ message: 'Неверный id карточки' });
+    } else {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    }
+  });
