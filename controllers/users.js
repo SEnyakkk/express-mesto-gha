@@ -1,8 +1,8 @@
+const { HTTP_STATUS_CREATED } = require('http2').constants;
 const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
-const BadRequestError = require('../utils/errors/BadRequest')
-const NotFoundError = require('../utils/errors/NotFound')
-const { HTTP_STATUS_CREATED } = require('http2').constants;
+const BadRequestError = require('../utils/errors/BadRequest');
+const NotFoundError = require('../utils/errors/NotFound');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res, next) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Проверьте Id'));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`))
+        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`));
       } else {
         next(err);
       }
@@ -49,7 +49,7 @@ module.exports.editUserData = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`))
+        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`));
       } else {
         next(err);
       }
@@ -65,7 +65,7 @@ module.exports.editUserAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`))
+        next(new NotFoundError(`Пользователь с id-${req.params.userId} не найден`));
       } else {
         next(err);
       }

@@ -1,8 +1,8 @@
-const Card = require('../models/card');
-const mongoose = require('mongoose');
-const BadRequestError = require('../utils/errors/BadRequest')
-const NotFoundError = require('../utils/errors/NotFound')
 const { HTTP_STATUS_CREATED } = require('http2').constants;
+const mongoose = require('mongoose');
+const Card = require('../models/card');
+const BadRequestError = require('../utils/errors/BadRequest');
+const NotFoundError = require('../utils/errors/NotFound');
 
 module.exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -37,7 +37,6 @@ module.exports.deleteCard = (req, res, next) => {
         next(err);
       }
     });
-
 };
 
 module.exports.likeCard = (req, res, next) => Card.findByIdAndUpdate(
