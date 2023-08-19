@@ -1,8 +1,10 @@
 const { HTTP_STATUS_CREATED } = require('http2').constants;
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../utils/errors/BadRequest');
 const NotFoundError = require('../utils/errors/NotFound');
+const ConflictError = require('../utils/errors/Conflict');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -28,12 +30,23 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.addUser = (req, res, next) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.status(HTTP_STATUS_CREATED).send(user))
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then(() => res.status(HTTP_STATUS_CREATED).send({
+      data: {
+        name, about, avatar, email,
+      },
+    }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
+      } else if (err.code === 11000) {
+        next(new ConflictError(`Пользователь ${email} уже зарегистрирован`));
       } else {
         next(err);
       }
