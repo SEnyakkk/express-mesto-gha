@@ -17,7 +17,7 @@ mongoose.connect(MONGO_DB, {
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64cea12cea57c5a3ebdd60b0',
+    _id: '64e0ee51179707ad3be40ff0',
   };
   next();
 });
@@ -27,6 +27,18 @@ app.use('/cards', require('./routes/cards'));
 
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найден' });
+});
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message
+    });
+    next();
 });
 
 app.listen(PORT);
