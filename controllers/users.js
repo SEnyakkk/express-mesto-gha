@@ -1,6 +1,7 @@
 const { HTTP_STATUS_CREATED } = require('http2').constants;
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequestError = require('../utils/errors/BadRequest');
 const NotFoundError = require('../utils/errors/NotFound');
@@ -83,4 +84,14 @@ module.exports.editUserAvatar = (req, res, next) => {
         next(err);
       }
     });
+};
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'JWT_SECRET', { expiresIn: '7d' });
+      res.send({ token });
+    })
+    .catch(next);
 };
