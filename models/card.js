@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { REG_URL } = require('../utils/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,7 +13,7 @@ const cardSchema = new mongoose.Schema({
     required: [true, 'Загрузите изображение'],
     validate: {
       validator(url) {
-        return /^((http|https|ftp):\/\/)?(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i.test(url);
+        return REG_URL.test(url);
       },
       message: 'Неверный URL',
     },
