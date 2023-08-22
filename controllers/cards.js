@@ -32,14 +32,23 @@ module.exports.deleteCard = (req, res, next) => {
         throw new ForbiddenError('Вы можете удалить только свою карточку');
       }
       Card.deleteOne(card)
-        .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
+        .orFail()
         .then(() => {
           res.send({ message: `Карточка ${card._id} удалена` });
+        })
+        .catch((err) => {
+          if (err instanceof mongoose.Error.DocumentNotFoundError) {
+            next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
+          } else if (err instanceof mongoose.Error.CastError) {
+            next(new BadRequestError('Проверьте Id карточки'));
+          } else {
+            next(err);
+          }
         });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError('Проверьте Id карточки'));
+      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
       } else {
         next(err);
       }
