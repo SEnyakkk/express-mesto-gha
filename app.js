@@ -5,7 +5,6 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { rateLimit } = require('express-rate-limit');
 
-
 const { PORT = 3000, MONGO_DB = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
@@ -13,7 +12,7 @@ const app = express();
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-})
+});
 
 app.use(limiter);
 app.use(helmet());
