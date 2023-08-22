@@ -25,34 +25,44 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
+// module.exports.deleteCard = (req, res, next) => {
+//   Card.findById(req.params.cardId)
+//     .then((card) => {
+//       if (!card.owner.equals(req.user._id)) {
+//         throw new ForbiddenError('Вы можете удалить только свою карточку');
+//       }
+//       Card.deleteOne(card)
+//         .orFail()
+//         .then(() => {
+//           res.send({ message: `Карточка ${card._id} удалена` });
+//         })
+//         .catch((err) => {
+//           if (err instanceof mongoose.Error.DocumentNotFoundError) {
+//             next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
+//           } else if (err instanceof mongoose.Error.CastError) {
+//             next(new BadRequestError('Проверьте Id карточки'));
+//           } else {
+//             next(err);
+//           }
+//         });
+//     })
+//     .catch((err) => {
+//       if (err instanceof mongoose.Error.DocumentNotFoundError) {
+//         next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
     .then((card) => {
-      if (!card.owner.equals(req.user._id)) {
-        throw new ForbiddenError('Вы можете удалить только свою карточку');
-      }
-      Card.deleteOne(card)
-        .orFail()
-        .then(() => {
-          res.send({ message: `Карточка ${card._id} удалена` });
-        })
-        .catch((err) => {
-          if (err instanceof mongoose.Error.DocumentNotFoundError) {
-            next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
-          } else if (err instanceof mongoose.Error.CastError) {
-            next(new BadRequestError('Проверьте Id карточки'));
-          } else {
-            next(err);
-          }
-        });
+      if (card.owner.toString() !== req.user._id) return next(new ForbiddenError());
+      return Card.deleteOne(card).then(() => res.send({ message: `Карточка ${card._id} удалена` }));
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => Card.findByIdAndUpdate(
