@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../utils/errors/BadRequest');
 const NotFoundError = require('../utils/errors/NotFound');
+const ForbiddenError = require('../utils/errors/Forbidden');
 
 module.exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -25,10 +26,16 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
-    .then(() => {
-      res.send({ message: 'Карточка удалена' });
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Вы можете удалить только свою карточку');
+      }
+      Card.deleteOne(card)
+        .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
+        .then(() => {
+          res.send({ message: `Карточка ${card._id} удалена` });
+        });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {

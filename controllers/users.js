@@ -95,3 +95,9 @@ module.exports.login = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => res.send(user))
+    .catch(next);
+};
