@@ -20,7 +20,7 @@ module.exports.addCard = (req, res, next) => {
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate(['owner', 'likes'])
+    // .populate(['owner', 'likes'])
     .then((cards) => res.send(cards))
     .catch(next);
 };
@@ -41,7 +41,7 @@ module.exports.likeCard = (req, res, next) => Card.findByIdAndUpdate(
   { new: true },
 )
   .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
-  .populate(['owner', 'likes'])
+  // .populate(['owner', 'likes'])
   .then((card) => {
     res.send(card);
   })
@@ -59,7 +59,7 @@ module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   { new: true },
 )
   .orFail(new NotFoundError(`Карточка с id-${req.params.cardId} не найдена`))
-  .populate(['owner', 'likes'])
+  // .populate(['owner', 'likes'])
   .then((card) => {
     res.send(card);
   })
